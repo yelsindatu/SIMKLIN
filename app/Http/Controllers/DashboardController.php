@@ -11,15 +11,67 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = \App\Models\User::count();
-        $superadminCount = \App\Models\User::where('role', 'Superadmin')->count();
-        $adminCount = \App\Models\User::where('role', 'Admin')->count();
+        $user = Auth::user();
+        
+        $totalPatientsToday = 0;
+        $dailyRevenue = 0;
+        $monthlyRevenue = 0;
+        $weeklyVisits = [];
+        
+        $today = now()->format('Y-m-d');
+        $thisMonth = now()->format('m');
+        $thisYear = now()->format('Y');
+
+        if ($user->role === 'Dokter') {
+            $doctorId = $user->doctor->id ?? null;
+            
+            if ($doctorId) {
+                $totalPatientsToday = \App\Models\Appointment::where('doctor_id', $doctorId)
+                                        ->whereDate('appointment_date', $today)
+                                        ->count();
+                                        
+                $visits = \App\Models\Appointment::selectRaw('DATE(appointment_date) as date, count(*) as total')
+                                        ->where('doctor_id', $doctorId)
+                                        ->where('appointment_date', '>=', now()->subDays(6)->startOfDay())
+                                        ->groupBy('date')
+                                        ->orderBy('date')
+                                        ->get()
+                                        ->keyBy('date');
+            } else {
+                $visits = collect();
+            }
+        } else {
+            // Admin and Superadmin
+            $totalPatientsToday = \App\Models\Appointment::whereDate('appointment_date', $today)->count();
+            
+            $dailyRevenue = \App\Models\PaymentInvoice::whereDate('created_at', $today)
+                                        ->where('status', 'Paid')
+                                        ->sum('total_amount');
+                                        
+            $monthlyRevenue = \App\Models\PaymentInvoice::whereMonth('created_at', $thisMonth)
+                                        ->whereYear('created_at', $thisYear)
+                                        ->where('status', 'Paid')
+                                        ->sum('total_amount');
+                                        
+            $visits = \App\Models\Appointment::selectRaw('DATE(appointment_date) as date, count(*) as total')
+                                    ->where('appointment_date', '>=', now()->subDays(6)->startOfDay())
+                                    ->groupBy('date')
+                                    ->orderBy('date')
+                                    ->get()
+                                    ->keyBy('date');
+        }
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $weeklyVisits[now()->subDays($i)->format('d M')] = $visits->has($date) ? $visits[$date]->total : 0;
+        }
 
         return view('dashboard.index', [
             'title' => 'Dashboard',
-            'totalUsers' => $totalUsers,
-            'superadminCount' => $superadminCount,
-            'adminCount' => $adminCount,
+            'totalPatientsToday' => $totalPatientsToday,
+            'dailyRevenue' => $dailyRevenue,
+            'monthlyRevenue' => $monthlyRevenue,
+            'weeklyVisits' => $weeklyVisits,
         ]);
     }
 
