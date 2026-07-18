@@ -277,6 +277,30 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('patient.*') ? '' : 'collapsed' }}"
+                    href="{{ route('patient.index') }}">
+                    <i class='bx bx-group'></i>
+                    <span>Pasien</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('appointment.*') ? '' : 'collapsed' }}"
+                    href="{{ route('appointment.index') }}">
+                    <i class='bx bx-calendar-check'></i>
+                    <span>Appointment</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('medical-record.*') ? '' : 'collapsed' }}"
+                    href="{{ route('medical-record.index') }}">
+                    <i class='bx bx-folder-open'></i>
+                    <span>Rekam Medis</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('setting.*') ? '' : 'collapsed' }}"
                     href="{{ route('setting.index') }}">
                     <i class='bx bx-cog'></i>
