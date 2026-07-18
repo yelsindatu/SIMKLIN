@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \App\Models\Patient::observe(\App\Observers\PatientObserver::class);
         try {
             $setting = Setting::first();
             View::share('setting', $setting);
