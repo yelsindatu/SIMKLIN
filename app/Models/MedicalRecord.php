@@ -42,4 +42,9 @@ class MedicalRecord extends Model
     {
         return $this->belongsTo(Diagnosis::class);
     }
+
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class);
+    }
 }

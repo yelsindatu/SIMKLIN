@@ -72,3 +72,82 @@
         </table>
     </div>
 </div>
+
+<hr>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h6 class="text-primary">Daftar Resep Obat (E-Prescription)</h6>
+        
+        @if($record->status != 'locked')
+            <form action="{{ route('prescription.store') }}" method="post" class="mb-3">
+                @csrf
+                <input type="hidden" name="medical_record_id" value="{{ $record->id }}">
+                
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">Pilih Obat</label>
+                        <select class="form-select" name="medicine_id" required>
+                            <option value="">-- Pilih Obat --</option>
+                            @foreach(\App\Models\Medicine::where('stock', '>', 0)->orderBy('name')->get() as $med)
+                                <option value="{{ $med->id }}">{{ $med->name }} (Stok: {{ $med->stock }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Jumlah</label>
+                        <input type="number" class="form-control" name="quantity" min="1" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Aturan Pakai</label>
+                        <input type="text" class="form-control" name="dosage_instruction" placeholder="Contoh: 3x1 sesudah makan" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100"><i class='bx bx-plus'></i> Tambah</button>
+                    </div>
+                </div>
+            </form>
+        @endif
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm w-100">
+                <thead class="table-light">
+                    <tr>
+                        <th width="5%">No</th>
+                        <th>Nama Obat</th>
+                        <th width="10%">Jumlah</th>
+                        <th>Aturan Pakai</th>
+                        @if($record->status != 'locked')
+                            <th width="10%">Aksi</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($record->prescriptions as $prescription)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $prescription->medicine->name }}</td>
+                            <td>{{ $prescription->quantity }}</td>
+                            <td>{{ $prescription->dosage_instruction }}</td>
+                            @if($record->status != 'locked')
+                                <td>
+                                    <form action="{{ route('prescription.destroy', $prescription) }}" method="post" class="d-inline">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Batalkan resep ini?')">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ $record->status == 'locked' ? 4 : 5 }}" class="text-center text-muted">Belum ada resep obat.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

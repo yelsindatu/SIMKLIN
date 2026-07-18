@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/patient', \App\Http\Controllers\PatientController::class);
     Route::resource('/appointment', \App\Http\Controllers\AppointmentController::class);
     Route::resource('/medical-record', \App\Http\Controllers\MedicalRecordController::class);
+    Route::resource('/medicine', \App\Http\Controllers\MedicineController::class);
+    Route::resource('/prescription', \App\Http\Controllers\PrescriptionController::class)->only(['store', 'destroy']);
 
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting/{setting}/update', [SettingController::class, 'update'])->name('setting.update');
