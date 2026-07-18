@@ -309,6 +309,14 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('payment-invoice.*') ? '' : 'collapsed' }}"
+                    href="{{ route('payment-invoice.index') }}">
+                    <i class='bx bx-money'></i>
+                    <span>Pembayaran</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('medicine.*') ? '' : 'collapsed' }}"
                     href="{{ route('medicine.index') }}">
                     <i class='bx bx-capsule'></i>

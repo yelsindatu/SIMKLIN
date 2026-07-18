@@ -44,7 +44,7 @@
     
     <div class="col-md-6">
         <h6 class="text-primary">SOAP & Diagnosis (Dokter)</h6>
-        <table class="table table-bordered table-striped w-100">
+        <table class="table table-bordered table-striped w-100 mb-4">
             <tbody>
                 <tr>
                     <th width="30%">S - Subjective</th>
@@ -70,6 +70,34 @@
                 </tr>
             </tbody>
         </table>
+
+        @if($record->appointment->paymentInvoice)
+            <h6 class="text-primary">Informasi Tagihan</h6>
+            <table class="table table-bordered table-striped w-100">
+                <tbody>
+                    <tr>
+                        <th width="30%">Total Tagihan</th>
+                        <td>Rp {{ number_format($record->appointment->paymentInvoice->total_amount, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status Pembayaran</th>
+                        <td>
+                            @if($record->appointment->paymentInvoice->status == 'Paid')
+                                <span class="badge bg-success">Lunas</span>
+                            @else
+                                <span class="badge bg-danger">Belum Lunas</span>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Detail Tagihan</th>
+                        <td>
+                            <a href="{{ route('payment-invoice.show', $record->appointment->paymentInvoice) }}" class="btn btn-sm btn-info text-white">Lihat Invoice</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        @endif
     </div>
 </div>
 

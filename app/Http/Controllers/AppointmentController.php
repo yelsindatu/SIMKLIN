@@ -15,7 +15,7 @@ class AppointmentController extends Controller
     {
         return view('appointment.index', [
             'title' => 'Appointment',
-            'appointments' => Appointment::with(['patient', 'doctor.user'])->latest()->get(),
+            'appointments' => Appointment::with(['patient', 'doctor.user', 'medicalRecord'])->latest()->get(),
         ]);
     }
 

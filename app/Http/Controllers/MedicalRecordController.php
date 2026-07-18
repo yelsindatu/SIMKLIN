@@ -50,7 +50,30 @@ class MedicalRecordController extends Controller
         ]);
 
         try {
-            MedicalRecord::create($validate);
+            $medicalRecord = MedicalRecord::create($validate);
+
+            if ($request->status === 'locked') {
+                $appointment = $medicalRecord->appointment;
+                $appointment->update([
+                    'status' => 'Completed'
+                ]);
+                
+                // Generate Invoice
+                // At this point, there's no prescription because the RM was just created.
+                // So medicineFee is 0.
+                $medicineFee = 0;
+                $doctorFee = 50000;
+                \App\Models\PaymentInvoice::create([
+                    'appointment_id' => $appointment->id,
+                    'doctor_fee' => $doctorFee,
+                    'medicine_fee' => $medicineFee,
+                    'total_amount' => $doctorFee + $medicineFee,
+                    'status' => 'Unpaid',
+                ]);
+
+                return to_route('medical-record.index')->withSuccess('Rekam medis berhasil disimpan dan dikunci. Tagihan otomatis terbuat.');
+            }
+
             return to_route('medical-record.index')->withSuccess('Rekam medis berhasil disimpan.');
         } catch (\Exception $e) {
             return back()->withInput()->withError('Gagal menyimpan data: ' . $e->getMessage());
@@ -99,6 +122,30 @@ class MedicalRecordController extends Controller
 
         try {
             $medicalRecord->update($validate);
+
+            if ($request->status === 'locked') {
+                $appointment = $medicalRecord->appointment;
+                $appointment->update([
+                    'status' => 'Completed'
+                ]);
+                
+                // Generate Invoice
+                $medicineFee = 0;
+                foreach ($medicalRecord->prescriptions as $prescription) {
+                    $medicineFee += $prescription->quantity * $prescription->medicine->price;
+                }
+                $doctorFee = 50000;
+                \App\Models\PaymentInvoice::create([
+                    'appointment_id' => $appointment->id,
+                    'doctor_fee' => $doctorFee,
+                    'medicine_fee' => $medicineFee,
+                    'total_amount' => $doctorFee + $medicineFee,
+                    'status' => 'Unpaid',
+                ]);
+
+                return back()->withSuccess('Rekam medis berhasil dikunci. Tagihan otomatis terbuat.');
+            }
+
             return to_route('medical-record.index')->withSuccess('Rekam medis berhasil diubah.');
         } catch (\Exception $e) {
             return back()->withInput()->withError('Gagal mengubah data: ' . $e->getMessage());

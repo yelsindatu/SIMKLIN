@@ -37,7 +37,12 @@
                                 @endif
                             </td>
                             <td>
-                                <button type="button" class="btn btn-info btn-sm btn-detail"
+                                @if(!$appointment->medicalRecord && $appointment->status != 'cancelled')
+                                    <a href="{{ route('medical-record.create', ['appointment_id' => $appointment->id]) }}" class="btn btn-primary btn-sm" title="Buat Rekam Medis">
+                                        <i class='bx bx-plus-medical'></i> RM
+                                    </a>
+                                @endif
+                                <button type="button" class="btn btn-info btn-sm btn-detail text-white"
                                     data-route="{{ route('appointment.show', $appointment) }}">
                                     <i class='bx bx-show'></i>
                                 </button>
