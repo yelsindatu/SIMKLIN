@@ -20,4 +20,9 @@ class Patient extends Model
         'address',
         'blood_type'
     ];
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
