@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/user', UserController::class)->middleware('role:Superadmin');
     Route::resource('/patient', \App\Http\Controllers\PatientController::class);
     Route::resource('/appointment', \App\Http\Controllers\AppointmentController::class);
+    Route::resource('/medical-record', \App\Http\Controllers\MedicalRecordController::class);
 
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting/{setting}/update', [SettingController::class, 'update'])->name('setting.update');
