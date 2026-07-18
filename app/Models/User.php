@@ -22,6 +22,16 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function nurseSchedules()
+    {
+        return $this->hasMany(NurseSchedule::class);
+    }
+
     protected function casts(): array
     {
         return [

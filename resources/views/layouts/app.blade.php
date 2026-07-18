@@ -285,6 +285,22 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('room.*') ? '' : 'collapsed' }}"
+                    href="{{ route('room.index') }}">
+                    <i class='bx bx-door-open'></i>
+                    <span>Kamar</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('nurse-schedule.*') ? '' : 'collapsed' }}"
+                    href="{{ route('nurse-schedule.index') }}">
+                    <i class='bx bx-calendar'></i>
+                    <span>Jadwal Perawat</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('appointment.*') ? '' : 'collapsed' }}"
                     href="{{ route('appointment.index') }}">
                     <i class='bx bx-calendar-check'></i>

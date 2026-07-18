@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/medical-record', \App\Http\Controllers\MedicalRecordController::class);
     Route::resource('/medicine', \App\Http\Controllers\MedicineController::class);
     Route::resource('/prescription', \App\Http\Controllers\PrescriptionController::class)->only(['store', 'destroy']);
+    Route::resource('/room', \App\Http\Controllers\RoomController::class);
+    Route::resource('/nurse-schedule', \App\Http\Controllers\NurseScheduleController::class);
 
     Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
     Route::put('/setting/{setting}/update', [SettingController::class, 'update'])->name('setting.update');
